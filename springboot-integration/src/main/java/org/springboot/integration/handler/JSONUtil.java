@@ -23,6 +23,7 @@ public class JSONUtil {
 	
 	static{
 		gson  = new Gson();//todo yyyy-MM-dd HH:mm:ss 
+		System.out.println("这时什么东西啊");
 	}
 	
 	public static synchronized Gson newInstance(){
