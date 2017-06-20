@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.springboot.integration.dao.UserMapper">
+
+	<!-- 保存实体的映射结果集-->
+	<resultMap id="BaseResultMap" type="org.springboot.integration.entity.UserEntity">
+		<result column="uid" property="uid" />
+		<result column="age" property="userName" />
+		<result column="user_name" property="user_name" />
+		<result column="address" property="address" />
+	</resultMap>
+
+	<!-- 保存VO的映射结果集-->
+	<resultMap id="VOResultMap" type="org.springboot.integration.vo.UserVO">
+		<result column="uid" property="uid" />
+		<result column="age" property="userName" />
+		<result column="user_name" property="user_name" />
+		<result column="address" property="address" />
+	</resultMap>
+
+	<parameterMap id="UserVOParam" type="org.springboot.integration.vo.UserVO"/>
+
+	<sql id="Base_Column_List">
+		uid, user_name, age, address
+	</sql>
+
+
+
+	<select id="findByName" resultMap="VOResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from t_user
+		where user_name = #{userName}
+	</select>
+
+
+	<insert id="addUser" parameterType="org.springboot.integration.entity.UserEntity" keyProperty="uid" useGeneratedKeys="true" >
+		insert into t_user(user_name,age,address) values(#{userName}, #{age},#{address})
+	</insert>
+
+
+	<insert id="addUsers" parameterType="org.springboot.integration.entity.UserEntity" useGeneratedKeys="true" >
+
+		 INSERT  INTO t_user (user_name,age,address)  VALUES
+		 <foreach collection="list" index="index" item="user" separator=",">
+			 (#{user.userName}, #{user.age},#{user.address})
+		 </foreach>
+	</insert>
+
+
+	<update id="updateUserByUid" parameterType="org.springboot.integration.entity.UserEntity">
+		update t_user set user_name=#{userName},age=#{age},address=#{address} where uid=#{uid}
+
+	</update>
+
+</mapper>
