@@ -58,7 +58,7 @@ public class UserController {
     @ApiImplicitParam(name = "uid", value = "编码", paramType = "path", required = true)
     @RequestMapping(value = "/user/{uid}", method = RequestMethod.GET)
     public UserVO getUser(@PathVariable("uid") String userid) {
-        System.out.println("测试Make的作用111");
+        System.out.println("测试Make的作用222");
         return userService.getUserById(userid);
 
     }
