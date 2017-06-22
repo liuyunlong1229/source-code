@@ -74,6 +74,7 @@ public class UserController {
     public String addUser(UserVO user) {
         Long uid = userService.addUser(user);
         System.out.println("新增用户的主键为==" + uid);
+        System.out.println("好了");
         redisService.flushDB();
         return "success";
 
