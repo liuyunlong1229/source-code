@@ -33,7 +33,8 @@ public interface UserMapper {
 
     @Select("select * from t_user")
     @Results({
-            @Result(property = "userName", column = "user_name")
+            @Result(property = "userName", column = "user_name"),
+            @Result(property = "birthDay", column = "birth_day") 
     })
     List<UserVO> findAll();
 

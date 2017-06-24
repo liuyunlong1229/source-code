@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by thinkpad on 2017/5/13.
@@ -18,22 +19,25 @@ public class UserVO implements Serializable{
     @ApiModelProperty(value = "名称")
     private String userName;
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     @ApiModelProperty(value = "年龄")
     private int age;
 
     @ApiModelProperty(value = "地址")
     private String address;
+    
+    @ApiModelProperty(value = "出生日期")
+    private Date birthDay;
 
 
-    public Long getUid() {
+    public Date getBirthDay() {
+		return birthDay;
+	}
+
+	public void setBirthDay(Date birthDay) {
+		this.birthDay = birthDay;
+	}
+
+	public Long getUid() {
         return uid;
     }
 
@@ -55,5 +59,13 @@ public class UserVO implements Serializable{
 
     public void setAge(int age) {
         this.age = age;
+    }
+    
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

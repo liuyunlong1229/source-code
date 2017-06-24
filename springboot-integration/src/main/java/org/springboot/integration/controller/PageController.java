@@ -24,5 +24,12 @@ public class PageController {
         model.addAttribute("name", name);
         return "hello";
     }
+    
+    
+
+    @RequestMapping(value="/user-list",method = RequestMethod.GET)
+    public String userList() {
+        return "user/user-list";
+    }
 
 }

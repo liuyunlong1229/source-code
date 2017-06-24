@@ -5,17 +5,19 @@
 	<!-- 保存实体的映射结果集-->
 	<resultMap id="BaseResultMap" type="org.springboot.integration.entity.UserEntity">
 		<result column="uid" property="uid" />
-		<result column="age" property="userName" />
-		<result column="user_name" property="user_name" />
+		<result column="age" property="age" />
+		<result column="user_name" property="userName" />
 		<result column="address" property="address" />
+		<result column="birth_day" property="birthDay" />
 	</resultMap>
 
 	<!-- 保存VO的映射结果集-->
 	<resultMap id="VOResultMap" type="org.springboot.integration.vo.UserVO">
 		<result column="uid" property="uid" />
-		<result column="age" property="userName" />
-		<result column="user_name" property="user_name" />
+		<result column="age" property="age" />
+		<result column="user_name" property="userName" />
 		<result column="address" property="address" />
+		<result column="birth_day" property="birthDay" />
 	</resultMap>
 
 	<parameterMap id="UserVOParam" type="org.springboot.integration.vo.UserVO"/>
@@ -35,15 +37,15 @@
 
 
 	<insert id="addUser" parameterType="org.springboot.integration.entity.UserEntity" keyProperty="uid" useGeneratedKeys="true" >
-		insert into t_user(user_name,age,address) values(#{userName}, #{age},#{address})
+		insert into t_user(user_name,age,address,birth_day) values(#{userName}, #{age},#{address},#{birthDay})
 	</insert>
 
 
 	<insert id="addUsers" parameterType="org.springboot.integration.entity.UserEntity" useGeneratedKeys="true" >
 
-		 INSERT  INTO t_user (user_name,age,address)  VALUES
+		 INSERT INTO t_user (user_name,age,address,birth_day)  VALUES
 		 <foreach collection="list" index="index" item="user" separator=",">
-			 (#{user.userName}, #{user.age},#{user.address})
+			 (#{user.userName}, #{user.age},#{user.address},#{user.birthDay})
 		 </foreach>
 	</insert>
 

@@ -9,12 +9,14 @@ import io.swagger.annotations.ApiOperation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springboot.integration.service.RedisService;
 import org.springboot.integration.service.UserService;
+import org.springboot.integration.util.StringDateUtil;
 import org.springboot.integration.vo.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Api(value = "用户操作接口API")
 @RestController
-@RequestMapping(value = "/users")
 public class UserController {
 
     @Autowired
@@ -40,7 +41,7 @@ public class UserController {
     static Map<Long, UserVO> users = Collections.synchronizedMap(new HashMap<Long, UserVO>());
 
     @ApiOperation(value = "获取用户列表", notes = "查询所有用户信息")
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public List<UserVO> getUsers() {
       
         List<UserVO>  userList= redisService.getList("userList", UserVO.class);
@@ -49,6 +50,8 @@ public class UserController {
         	 userList=userService.findAll();
              redisService.setList("userList", userList);
         }
+        
+       userList.forEach(x->System.out.println(x.getUserName()+"||"+x.getBirthDay().getTime()));
        
         return userList;
 
@@ -113,12 +116,15 @@ public class UserController {
     public String addUserBatch() {
         List<UserVO> userVOList = new ArrayList<UserVO>();
         UserVO userVO = null;
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             userVO = new UserVO();
             userVO.setUserName("汪涵" + i);
             userVO.setAddress("湖南长沙");
+            userVO.setBirthDay(StringDateUtil.addMonth(new Date(), -i));
             userVO.setAge(i + 1);
             userVOList.add(userVO);
+            
+            
         }
         int count = userService.addUsers(userVOList);
         System.out.println("批量插入用户信息结果||" + count);
