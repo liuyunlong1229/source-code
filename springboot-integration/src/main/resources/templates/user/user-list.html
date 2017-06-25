@@ -1,18 +1,24 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Getting Started: Serving Web Content</title>
+<head th:replace="header-link :: header(title,link)"> <!--将下面的调用header-link.html的一个叫“header”的fragment，并将link tile作为参数传过去 -->
+	 <title>用户列表</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="/css/user/user-list.css"/>
 </head>
-<body>
-<p th:text="'Hello, ' + ${name} + '!'" />
+
+<div th:include="header :: header"></div>
+
+<body> 
 
  <table id="userTab">
  
  </table>
+ 
+ <div th:replace="footer :: copy" ></div>
 
 
 </body>
+<!-- 根目录为static的目录 -->
 <script type="text/javascript" src="/js/jquery-1.4.2.js"></script>
 <script type="text/javascript" src="/js/DateUtil.js"></script>
 <script type="text/javascript" src="/js/user/user-list.js"></script>

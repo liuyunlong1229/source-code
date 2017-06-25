@@ -71,8 +71,7 @@ public class UserController {
          @ApiImplicitParam(name = "userName", value = "名称", paramType = "query", required = true),
          @ApiImplicitParam(name = "age", value = "性别", paramType = "query", required = true),
          @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = true)
-    }
-    )
+    })
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String addUser(UserVO user) {
         Long uid = userService.addUser(user);
@@ -90,8 +89,7 @@ public class UserController {
             @ApiImplicitParam(name = "userName", value = "名称", paramType = "query", required = true),
             @ApiImplicitParam(name = "age", value = "性别", paramType = "query", required = true),
             @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = true)
-    }
-    )
+    })
     @RequestMapping(value = "/user", method = RequestMethod.PUT)
     public String updateUser(UserVO user) {
         System.out.println("用户编号||" + user.getUid());
