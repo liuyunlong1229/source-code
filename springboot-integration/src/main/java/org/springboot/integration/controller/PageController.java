@@ -25,8 +25,11 @@ public class PageController {
         return "hello";
     }
     
+    @RequestMapping(value={"/login","/"},method = RequestMethod.GET)
+    public String login(){
+    	return "login";
+    }
     
-
     @RequestMapping(value="/user-list",method = RequestMethod.GET)
     public String userList() {
         return "user/user-list";

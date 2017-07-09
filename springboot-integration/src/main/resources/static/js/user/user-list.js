@@ -1,6 +1,6 @@
 $.ajax({
    type: "GET",
-   url: "/user/list",
+   url: BASE_CONTEXT_PATH+"/user/list",
  //  data: "name=John&location=Boston",
  //  dataType:"json",
    success: function(msg){

@@ -5,6 +5,8 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <meta name="renderer" content="webkit"/>
+    <meta name="context-path" th:content="${#httpServletRequest.getContextPath()}" />
+    <meta name="context-path1" th:content="@{/}"/>
     <meta http-equiv="Cache-control" content="no-cache"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
@@ -13,11 +15,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1 user-scalable=no"/>
     <meta name="360-site-verification" content="b3d1fa48bb29da190af813f48f8cf1d3"/>
     <title><th:block th:include=":: ${title}"></th:block>-智慧园区物流平台</title> <!-- 将参数是中传过来的标题在这里拼接，作为整个标题栏 -->
-    <link rel="stylesheet" type="text/css" href="/css/header.css"/>
-    <link rel="shortcut icon" type="image/ico" href="/images/favicon.ico"/> <!--自定义图片作为页签的小图标-->
-    <script type="text/javascript" src="/js/jquery-1.4.2.js"></script>
-    <script type="text/javascript" src="/js/header.js"></script>
+    <link rel="stylesheet" type="text/css" th:href="@{/}+'css/header.css'"/>
+    <link rel="shortcut icon" type="image/ico" th:href="@{/}+'images/favicon.ico'"/> <!--自定义图片作为页签的小图标-->
+    <script type="text/javascript"  th:src="@{/}+'js/jquery-1.4.2.js'"></script>
+    <script type="text/javascript" th:src="@{/}+'js/header.js'"></script>
+    <script type="text/javascript" th:src="@{/}+'js/DateUtil.js'"></script>
     <th:block th:replace=":: ${links}"></th:block> <!-- 将参数是中传过来的链接样式，在这里显示出来 -->
     
+    <script>
+    	var BASE_CONTEXT_PATH = $('meta[name=context-path]').attr("content");
+        BASE_CONTEXT_PATH = BASE_CONTEXT_PATH.substr(0, BASE_CONTEXT_PATH.length);
+        //alert(BASE_CONTEXT_PATH);
+    </script>
 </head>
+
+
 </html>

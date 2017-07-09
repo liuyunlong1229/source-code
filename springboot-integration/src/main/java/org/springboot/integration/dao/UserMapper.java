@@ -20,7 +20,7 @@ public interface UserMapper {
 
 
     //由于只有userName与对应数据库里面的字段（user_name）名不一致，需要特别指示
-    @Select("select * from t_user where uid=${uid}")
+    @Select("select * from t_user where uid=#{uid}")
     @Results({
             //@Result(property = "id", column = "id"),
            // @Result(property = "provinceId", column = "province_id"),
@@ -47,6 +47,15 @@ public interface UserMapper {
 
 
 
+   
+
+    @Select("select * from t_user where user_name=#{userName}")
+    @Results({
+            @Result(property = "userName", column = "user_name"),
+    })
+    //用@Param指定查询语句中的参数，对应方法的那个参数。
+	UserEntity getUserByName(@Param("userName")String userName);
+    
     int addUsers(List<UserVO> users);
 
     int updateUserByUid(UserEntity entity);

@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springboot.integration.filter.LoginFilter;
+import org.springboot.integration.filter.LoginInterceptor;
 import org.springboot.integration.service.RedisService;
 import org.springboot.integration.service.UserService;
 import org.springboot.integration.util.StringDateUtil;
@@ -40,6 +44,19 @@ public class UserController {
 
     static Map<Long, UserVO> users = Collections.synchronizedMap(new HashMap<Long, UserVO>());
 
+    
+    @ApiOperation(value = "用户登录", notes = "根据用户名查询用户")
+    @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", required = true)
+    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+    public String login(String userName,HttpServletRequest request){
+    	UserVO user=userService.getUserByName(userName);
+    	if(user !=null){
+    		request.getSession().setAttribute(LoginFilter.SESSION_USER, user);
+    		return "1";
+    	}
+    	return "0";
+    	
+    }
     @ApiOperation(value = "获取用户列表", notes = "查询所有用户信息")
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
     public List<UserVO> getUsers() {
@@ -50,8 +67,9 @@ public class UserController {
         	 userList=userService.findAll();
              redisService.setList("userList", userList);
         }
-        
-       userList.forEach(x->System.out.println(x.getUserName()+"||"+x.getBirthDay().getTime()));
+        for(UserVO x:userList){
+        	System.out.println(x.getUserName()+"||"+x.getBirthDay().getTime()+"||"+StringDateUtil.dateToString(x.getBirthDay(),4));
+        }
        
         return userList;
 
@@ -74,6 +92,7 @@ public class UserController {
     })
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String addUser(UserVO user) {
+    	user.setBirthDay(new Date());
         Long uid = userService.addUser(user);
         System.out.println("新增用户的主键为==" + uid);
         System.out.println("好了");
@@ -127,6 +146,15 @@ public class UserController {
         int count = userService.addUsers(userVOList);
         System.out.println("批量插入用户信息结果||" + count);
         return "success";
+
+    }
+    
+    
+    @ApiOperation(value = "退出系统")
+    @RequestMapping(value = "/user/logout", method = RequestMethod.POST)
+    public String logout(HttpServletRequest request) {
+    	request.getSession().invalidate();
+        return "1";
 
     }
 

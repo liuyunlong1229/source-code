@@ -47,7 +47,7 @@ public class RedisService {
 	        return result;  
 	    }  
 	    
-	    public boolean isExists(String key){
+	    public boolean isExists(final String key){
 	    	return redisTemplate.execute(new RedisCallback<Boolean>() {  
 	            @Override  
 	            public Boolean doInRedis(RedisConnection connection) throws DataAccessException { 

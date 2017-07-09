@@ -7,7 +7,31 @@
 </head>
 <body>
     <div th:fragment="header">  
-                        您好，欢迎来到恒迪快鹿物流平台    
+                        您好，欢迎来到恒迪快鹿物流平台(TOMCAT2)   <a href="javascript:void(0)" onclick="logout()">退出系统</a>   
+                        
+                        
+      <script type="text/javascript">            
+                        
+        function logout(){
+		
+			$.ajax({
+			   type: "POST",
+			   url: BASE_CONTEXT_PATH+"/user/logout",
+			   success: function(msg){
+				  if(msg=="1"){
+					  window.location.href=BASE_CONTEXT_PATH;
+				  }else{
+					  alert("退出失败");
+				  }
+			   }
+			});
+		
+	   }
+        </script>      
     </div>
 </body>
+
+
+
+
 </html>

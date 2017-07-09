@@ -84,4 +84,23 @@ public class UserService {
     public int addUsers(List<UserVO> users) {
         return userMapper.addUsers(users);
     }
+
+
+	public UserVO getUserByName(String userName) {
+		UserEntity entity=userMapper.getUserByName(userName);
+		
+		if(entity == null){
+			return null;
+		}
+		UserVO user=new UserVO();
+		 try {
+	            BeanUtils.copyProperties(entity, user);
+	        } catch (IllegalAccessException e) {
+	            e.printStackTrace();
+	        } catch (InvocationTargetException e) {
+	            e.printStackTrace();
+	        }
+		 
+		 return user;
+	}
 }
