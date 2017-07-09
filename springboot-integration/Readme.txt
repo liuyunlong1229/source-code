@@ -17,3 +17,9 @@ public ServletRegistrationBean apiV1ServletBean(WebApplicationContext wac) {
 }
 
 https://stackoverflow.com/questions/24242554/what-is-the-syntax-to-get-thymeleaf-pagecontext-request-contextpath
+
+
+SESSION的生命周期：
+当第一个访问服务器的时候，在也没响应后，会在cookie中生成一个session
+当退出浏览器后，在次进入时，之前是session会丢失。
+同一个浏览器的不同的页签session会共享。
