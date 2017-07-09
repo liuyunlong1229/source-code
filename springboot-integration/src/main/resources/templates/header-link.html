@@ -20,12 +20,29 @@
     <script type="text/javascript"  th:src="@{/}+'js/jquery-1.4.2.js'"></script>
     <script type="text/javascript" th:src="@{/}+'js/header.js'"></script>
     <script type="text/javascript" th:src="@{/}+'js/DateUtil.js'"></script>
+    <script type="text/javascript" th:src="@{/}+'myres/DateUtil-2.js'"></script>
     <th:block th:replace=":: ${links}"></th:block> <!-- 将参数是中传过来的链接样式，在这里显示出来 -->
     
     <script>
     	var BASE_CONTEXT_PATH = $('meta[name=context-path]').attr("content");
         BASE_CONTEXT_PATH = BASE_CONTEXT_PATH.substr(0, BASE_CONTEXT_PATH.length);
         //alert(BASE_CONTEXT_PATH);
+        
+         $.ajaxSetup({
+　　　
+	　　　　//请求失败遇到异常触发
+	　　　　error: function (xhr,e) { 
+			debugger;
+			if(xhr.status==444){
+				alert("会话超时，请重新登陆");
+				window.location.href=BASE_CONTEXT_PATH;
+			}else{
+				alert("系统发生异常");
+			}
+			
+	　　　　
+	　　　　}
+　　})
     </script>
 </head>
 

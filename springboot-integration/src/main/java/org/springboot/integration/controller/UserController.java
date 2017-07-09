@@ -17,7 +17,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springboot.integration.filter.LoginFilter;
-import org.springboot.integration.filter.LoginInterceptor;
 import org.springboot.integration.service.RedisService;
 import org.springboot.integration.service.UserService;
 import org.springboot.integration.util.StringDateUtil;
@@ -59,8 +58,7 @@ public class UserController {
     }
     @ApiOperation(value = "获取用户列表", notes = "查询所有用户信息")
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
-    public List<UserVO> getUsers() {
-      
+    public List<UserVO> getUsers(HttpServletRequest request) {
         List<UserVO>  userList= redisService.getList("userList", UserVO.class);
         if(userList == null){
         	 System.out.println("缓存中没有用户列表，准备查询数据库了。。。。。");

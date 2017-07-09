@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
-		</dependency> 
+		</dependency>
 
 		<!-- 本地运行时，依靠内置tomcat，打包时排除 -->
 		<dependency>
@@ -125,6 +125,7 @@
 			<artifactId>javax.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>

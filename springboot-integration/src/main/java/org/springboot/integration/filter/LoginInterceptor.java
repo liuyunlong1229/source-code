@@ -3,7 +3,6 @@ package org.springboot.integration.filter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginInterceptor implements HandlerInterceptor {
 
 	public static final String SESSION_USER="session_user";
+	public static final int SESSION_TIME_OUT=444;
 	
 	private String[]	ignoreUrlArr=new String[]{"/login","/user/login"};
 
@@ -33,12 +33,12 @@ public class LoginInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		if (isAjaxRequest(req)) {
-			resp.sendError(HttpStatus.UNAUTHORIZED.value());
+			resp.sendError(SESSION_TIME_OUT);
 		} else {
 			resp.sendRedirect(req.getContextPath() + "/login");
 		}
 
-		return true;
+		return false;
 	}
 
 	private boolean isIgnoreURL(String reqUrl) {
