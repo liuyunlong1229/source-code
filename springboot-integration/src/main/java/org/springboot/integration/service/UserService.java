@@ -49,6 +49,13 @@ public class UserService {
     }
 
     public Long addUser(UserVO user) {
+    	
+    	try {
+    		Thread.sleep(1000*3);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+    
         UserEntity entity = new UserEntity();
         try {
             BeanUtils.copyProperties(entity, user);

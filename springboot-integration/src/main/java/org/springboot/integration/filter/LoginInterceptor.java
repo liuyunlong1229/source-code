@@ -18,10 +18,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		HttpServletRequest req = request;
 		HttpServletResponse resp = response;
-		System.err.println("LoginInterceptor的preHandle方法");
+		//System.err.println("LoginInterceptor的preHandle方法");
 		String reqURI = req.getRequestURI();
 		String requestType = request.getHeader("X-Requested-With");
-		System.err.println("reqURL==" + reqURI + "    reqType==" + requestType);
+		//System.err.println("reqURL==" + reqURI + "    reqType==" + requestType);
 		
 		Object user=req.getSession().getAttribute(LoginInterceptor.SESSION_USER);
 		if (user!= null) {
@@ -61,13 +61,13 @@ public class LoginInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		System.err.println("LoginInterceptor的postHandle方法");
+		//System.err.println("LoginInterceptor的postHandle方法");
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		System.err.println("LoginInterceptor的afterCompletion方法");
+		//System.err.println("LoginInterceptor的afterCompletion方法");
 	}
 
 	public String[] getIgnoreUrlArr() {

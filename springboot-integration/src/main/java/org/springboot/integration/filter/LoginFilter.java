@@ -8,9 +8,11 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
 
@@ -20,7 +22,8 @@ import org.springframework.http.HttpStatus;
   * 属性filterName声明过滤器的名称,可选
   * 属性urlPatterns指定要过滤 的URL模式,也可使用属性value来声明.(指定要过滤的URL模式是必选属性)
   */
-//@WebFilter(filterName="LoginFilter",urlPatterns="/*")
+@Configuration
+@WebFilter(filterName="LoginFilter",urlPatterns="/**")
 public class LoginFilter implements Filter {
 
 	
@@ -31,7 +34,7 @@ public static final String SESSION_USER="session_user";
 	
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
-		System.err.println("过滤器初始化..........");
+		//System.err.println("过滤器初始化..........");
 		
 	}
 	
@@ -40,28 +43,12 @@ public static final String SESSION_USER="session_user";
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
-		
-		
-		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletResponse resp = (HttpServletResponse)response;
-		String reqURI = req.getRequestURI();
-		String requestType = req.getHeader("X-Requested-With");
-		System.err.println("reqURL==" + reqURI + "    reqType==" + requestType);
-		
-		Object user=req.getSession().getAttribute(LoginFilter.SESSION_USER);
-		if (user== null) {
-			
-			if (!isIgnoreURL(reqURI)) {
-				
-				if (isAjaxRequest(req)) {
-					resp.sendError(HttpStatus.UNAUTHORIZED.value());
-				} else {
-					resp.sendRedirect(req.getContextPath() + "/login");
-				}
-			}
-		}
-		
-		chain.doFilter(request, response);
+			HttpServletRequest req = (HttpServletRequest)request;
+			String reqURI = req.getRequestURI();
+			String requestType = req.getHeader("X-Requested-With");
+			//System.err.println("拦截的方法执行开始===过滤器里面的拦截的 reqURL==" + reqURI + "    reqType==" + requestType);
+		    chain.doFilter(request, response);
+		   // System.err.println("拦截的方法执行完了===过滤器里面的拦截的 reqURL==" + reqURI + "    reqType==" + requestType);
 		
 	}
 
@@ -71,22 +58,6 @@ public static final String SESSION_USER="session_user";
 	@Override
 	public void destroy() {
 		System.err.println("过滤器被销毁.........");
-	}
-
-	
-	private boolean isIgnoreURL(String reqUrl) {
-		for (String ignoreUrl : ignoreUrlArr) {
-			if(reqUrl.contains(ignoreUrl)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-
-	private boolean isAjaxRequest(HttpServletRequest request) {
-		String requestType = request.getHeader("X-Requested-With");
-		return requestType != null && requestType.equals("XMLHttpRequest");
 	}
 
 }

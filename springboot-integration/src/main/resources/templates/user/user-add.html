@@ -10,22 +10,35 @@
 
 <body> 
 
-<a href="javascript:void()" onclick="jumpToAddUser()">新增用户</a>
- <table id="userTab">
- 
- </table>
- 
+	<form>
+		用户名：<input type="text" name="userName" id="userName"/><br/>
+		年龄：<input type="number" name="age" id="age"/><br/>
+		地址：<input type="text"  name="address" id="address"/><br/>
+		<input type="button" value="保存" onclick="save()"/> 
+	</form>
  <div th:replace="footer :: copy" ></div>
 
 
 </body>
-<!-- 根目录为static的目录 -->
-<script type="text/javascript" th:src="@{/}+'/js/user/user-list.js'"></script>
 
 <script type="text/javascript">
-	function jumpToAddUser(){
-		window.location.href=BASE_CONTEXT_PATH+"/user-add";
-	}
+
+function save(){
+	
+	$.ajax({
+		   type: "POST",
+		   url: BASE_CONTEXT_PATH+"/user",
+		   data: {userName:$("#userName").val(),
+			   	  age :$("#age").val(),
+			   	  address:$("#address").val()
+		   		 },
+		   success: function(){
+			  window.location.href=BASE_CONTEXT_PATH+"/user-list";
+		   }
+		});
+	
+}
 
 </script>
+
 </html>

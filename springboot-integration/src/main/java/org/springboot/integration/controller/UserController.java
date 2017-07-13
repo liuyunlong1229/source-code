@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springboot.integration.filter.LoginFilter;
+import org.springboot.integration.filter.Token;
 import org.springboot.integration.service.RedisService;
 import org.springboot.integration.service.UserService;
 import org.springboot.integration.util.StringDateUtil;
@@ -89,12 +90,14 @@ public class UserController {
          @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = true)
     })
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public String addUser(UserVO user) {
+    @Token(fileName="userName")
+    public String addUser(HttpServletRequest requst,String userName,int age,String address) {
+    	UserVO user=new UserVO();
+    	user.setUserName(userName);
+    	user.setAddress(address);
+    	user.setAge(age);
     	user.setBirthDay(new Date());
         Long uid = userService.addUser(user);
-        System.out.println("新增用户的主键为==" + uid);
-        System.out.println("好了");
-        redisService.flushDB();
         return "success";
 
     }

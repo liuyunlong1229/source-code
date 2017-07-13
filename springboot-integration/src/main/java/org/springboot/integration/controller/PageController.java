@@ -39,5 +39,10 @@ public class PageController {
     	//request.getSession().invalidate();  模拟会话超时
         return "user/user-list";
     }
+    
+    @RequestMapping(value="/user-add",method = RequestMethod.GET)
+    public String userAdd(HttpServletRequest request) {
+        return "user/user-add";
+    }
 
 }
