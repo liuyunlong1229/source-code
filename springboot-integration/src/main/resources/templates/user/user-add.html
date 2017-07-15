@@ -32,8 +32,14 @@ function save(){
 			   	  age :$("#age").val(),
 			   	  address:$("#address").val()
 		   		 },
-		   success: function(){
-			  window.location.href=BASE_CONTEXT_PATH+"/user-list";
+		   success: function(msg){
+			   if(msg.ok){
+				   window.location.href=BASE_CONTEXT_PATH+"/user-list";
+			   }else{
+				   if (msg.message) {
+	                   alert(msg.message);
+	               }
+			   }
 		   }
 		});
 	

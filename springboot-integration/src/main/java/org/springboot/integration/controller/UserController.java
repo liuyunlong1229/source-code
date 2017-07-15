@@ -22,6 +22,7 @@ import org.springboot.integration.service.RedisService;
 import org.springboot.integration.service.UserService;
 import org.springboot.integration.util.StringDateUtil;
 import org.springboot.integration.vo.UserVO;
+import org.springboot.integration.web.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,38 +49,38 @@ public class UserController {
     @ApiOperation(value = "用户登录", notes = "根据用户名查询用户")
     @ApiImplicitParam(name = "userName", value = "用户名", paramType = "query", required = true)
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
-    public String login(String userName,HttpServletRequest request){
+    public Result login(String userName,HttpServletRequest request){
     	UserVO user=userService.getUserByName(userName);
     	if(user !=null){
     		request.getSession().setAttribute(LoginFilter.SESSION_USER, user);
-    		return "1";
+    		return Result.OK;
     	}
-    	return "0";
+    	return Result.fail("用户名存在");
     	
     }
     @ApiOperation(value = "获取用户列表", notes = "查询所有用户信息")
     @RequestMapping(value = "/user/list", method = RequestMethod.GET)
-    public List<UserVO> getUsers(HttpServletRequest request) {
+    public Result getUsers(HttpServletRequest request) {
         List<UserVO>  userList= redisService.getList("userList", UserVO.class);
         if(userList == null){
         	 System.out.println("缓存中没有用户列表，准备查询数据库了。。。。。");
         	 userList=userService.findAll();
              redisService.setList("userList", userList);
         }
-        for(UserVO x:userList){
+       /* for(UserVO x:userList){
         	System.out.println(x.getUserName()+"||"+x.getBirthDay().getTime()+"||"+StringDateUtil.dateToString(x.getBirthDay(),4));
-        }
-       
-        return userList;
+        }*/
+      
+        return  Result.ok(userList);
 
     }
 
     @ApiOperation(value = "查询用户详情", notes = "根据url中的用户编码查询", response = UserVO.class)
     @ApiImplicitParam(name = "uid", value = "编码", paramType = "path", required = true)
     @RequestMapping(value = "/user/{uid}", method = RequestMethod.GET)
-    public UserVO getUser(@PathVariable("uid") String userid) {
-        System.out.println("测试Make的作用1111111");
-        return userService.getUserById(userid);
+    public Result getUser(@PathVariable("uid") String userid) {
+        UserVO userVo= userService.getUserById(userid);
+        return  Result.ok(userVo);
 
     }
 
@@ -90,15 +91,18 @@ public class UserController {
          @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = true)
     })
     @RequestMapping(value = "/user", method = RequestMethod.POST)
-    @Token(fileName="userName")
-    public String addUser(HttpServletRequest requst,String userName,int age,String address) {
-    	UserVO user=new UserVO();
-    	user.setUserName(userName);
-    	user.setAddress(address);
-    	user.setAge(age);
+    @Token
+    public Result addUser(HttpServletRequest requst,UserVO user) {
+    	
+    	UserVO vo=userService.getUserByName(user.getUserName());
+    	if(vo !=null){
+    		return Result.fail("用户已存在，不能重复添加");
+    	}
+    	
     	user.setBirthDay(new Date());
         Long uid = userService.addUser(user);
-        return "success";
+        redisService.evict("userList");
+        return Result.OK;
 
     }
 
@@ -111,10 +115,11 @@ public class UserController {
             @ApiImplicitParam(name = "address", value = "地址", paramType = "query", required = true)
     })
     @RequestMapping(value = "/user", method = RequestMethod.PUT)
-    public String updateUser(UserVO user) {
+    @Token
+    public Result updateUser(HttpServletRequest requst,UserVO user) {
         System.out.println("用户编号||" + user.getUid());
         userService.updateUserByUid(user);
-        return "success";
+        return Result.OK;
 
     }
 
@@ -122,16 +127,17 @@ public class UserController {
     @ApiOperation(value = "删除用户", notes = "根据用户编码删除用户")
     @ApiImplicitParam(name = "uid", value = "编码", paramType = "path", required = true)
     @RequestMapping(value = "/user/{uid}", method = RequestMethod.DELETE)
-    public String delUser(@PathVariable Long uid) {
+    @Token
+    public Result delUser(HttpServletRequest requst ,@PathVariable Long uid) {
         userService.deleteUser(uid);
-        return "success";
+        return Result.OK;
 
     }
 
 
     @ApiOperation(value = "批量增加用户")
     @RequestMapping(value = "/user/batch", method = RequestMethod.POST)
-    public String addUserBatch() {
+    public Result addUserBatch() {
         List<UserVO> userVOList = new ArrayList<UserVO>();
         UserVO userVO = null;
         for (int i = 0; i < 10; i++) {
@@ -146,16 +152,16 @@ public class UserController {
         }
         int count = userService.addUsers(userVOList);
         System.out.println("批量插入用户信息结果||" + count);
-        return "success";
+        return Result.OK;
 
     }
     
     
     @ApiOperation(value = "退出系统")
     @RequestMapping(value = "/user/logout", method = RequestMethod.POST)
-    public String logout(HttpServletRequest request) {
-    	request.getSession().invalidate();
-        return "1";
+    public Result logout(HttpServletRequest request) {
+    	 request.getSession().invalidate();
+    	 return Result.OK;
 
     }
 

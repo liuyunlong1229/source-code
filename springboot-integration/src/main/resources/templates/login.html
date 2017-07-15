@@ -19,26 +19,5 @@
 </body>
 <!-- 根目录为static的目录 -->
 
-
-
-<script type="text/javascript">
-	
-	function login(){
-		
-		$.ajax({
-			   type: "POST",
-			   url: BASE_CONTEXT_PATH+"/user/login",
-			   data: "userName="+$("#userName").val(),
-			   success: function(msg){
-				  if(msg=="1"){
-					  window.location.href=BASE_CONTEXT_PATH+"/user-list";
-				  }else{
-					  alert("用户名不正确");
-				  }
-			   }
-			});
-		
-	}
-
-</script>
+  <script type="text/javascript" th:src="@{/}+'js/login.js'"></script>
 </html>

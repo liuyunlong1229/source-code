@@ -1,7 +1,7 @@
-package org.springboot.integration.filter;
+package org.springboot.integration.exception;
 
 public class RepeatSubmitException extends RuntimeException {
-	private String code;
+    private String code="999";
 	private String message;
 	public String getCode() {
 		return code;

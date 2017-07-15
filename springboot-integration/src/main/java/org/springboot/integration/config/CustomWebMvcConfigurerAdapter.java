@@ -20,7 +20,7 @@ public class CustomWebMvcConfigurerAdapter extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**");  //对来自/user/** 这个链接来的请求进行拦截
-       registry.addInterceptor(getTokenInterceptor()).addPathPatterns("/**");  //对来自/user/** 这个链接来的请求进行拦截
+        //registry.addInterceptor(getTokenInterceptor()).addPathPatterns("/**");  //对来自/user/** 这个链接来的请求进行拦截
         super.addInterceptors(registry);
     }
 
