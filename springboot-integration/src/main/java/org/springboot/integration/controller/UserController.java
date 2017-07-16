@@ -1,23 +1,13 @@
 package org.springboot.integration.controller;
 
 
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springboot.integration.filter.LoginFilter;
+import org.springboot.integration.filter.LoginInterceptor;
 import org.springboot.integration.filter.Token;
+import org.springboot.integration.filter.TokenSource;
 import org.springboot.integration.service.RedisService;
 import org.springboot.integration.service.UserService;
 import org.springboot.integration.util.StringDateUtil;
@@ -28,6 +18,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * Created by thinkpad on 2017/5/13.
@@ -52,7 +45,7 @@ public class UserController {
     public Result login(String userName,HttpServletRequest request){
     	UserVO user=userService.getUserByName(userName);
     	if(user !=null){
-    		request.getSession().setAttribute(LoginFilter.SESSION_USER, user);
+    		request.getSession().setAttribute(LoginInterceptor.SESSION_USER, user);
     		return Result.OK;
     	}
     	return Result.fail("用户名存在");
@@ -127,7 +120,7 @@ public class UserController {
     @ApiOperation(value = "删除用户", notes = "根据用户编码删除用户")
     @ApiImplicitParam(name = "uid", value = "编码", paramType = "path", required = true)
     @RequestMapping(value = "/user/{uid}", method = RequestMethod.DELETE)
-    @Token
+    @Token(source = TokenSource.FILED,filedIndex =1) //根据参数字段构建token,filedIndex指定具体的参数下标
     public Result delUser(HttpServletRequest requst ,@PathVariable Long uid) {
         userService.deleteUser(uid);
         return Result.OK;

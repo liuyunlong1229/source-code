@@ -8,9 +8,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Token {
-	
-	String fileName() default "";
-	String[] fileNames() default {};
-	String MethodName() default "";
-	
+
+	TokenSource source () default TokenSource.REQUEST;
+
+	@Deprecated
+	String [] filedNames() default {};
+
+	int  [] filedIndex() default  {};
+
 }

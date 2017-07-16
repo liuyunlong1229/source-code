@@ -1,13 +1,5 @@
 package org.springboot.integration.filter;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -18,6 +10,11 @@ import org.springboot.integration.exception.RepeatSubmitException;
 import org.springboot.integration.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Map.Entry;
 
 @Aspect
 @Component
@@ -41,7 +38,7 @@ public class ControllerInterceptor {
 	 * @param pjp
 	 */
 	@Around("controllerMethodPointcut()")
-	public Object after(ProceedingJoinPoint pjp) {
+	public Object around(ProceedingJoinPoint pjp) {
 
 		Object result = null;
 
@@ -69,8 +66,7 @@ public class ControllerInterceptor {
 	/**
 	 * key 为空说明是不需要重复判断的方法，直接放行
 	 * 
-	 * @param request
-	 * @param handler
+	 * @param pjp
 	 * @return
 	 */
 	private String getKey(ProceedingJoinPoint pjp) {
@@ -79,7 +75,7 @@ public class ControllerInterceptor {
 		String methodName = method.getName(); // 获取被拦截的方法名
 		
 		String className = pjp.getTarget().getClass().getName();
-		System.err.println(className+":"+methodName);
+		//System.err.println(className+":"+methodName);
 		
 		/*if (!method.isAnnotationPresent(Token.class)) {
 			return null;
@@ -90,12 +86,10 @@ public class ControllerInterceptor {
 		Object[] args = pjp.getArgs();
 
 		String key = null;
-		if (StringUtils.isNotBlank(token.fileName())) {
-			key = getKey1(args, token.fileName());
-		} else if (token.fileNames().length > 0) {
-			key = getKey2(args, token.fileNames());
+		if (token.source()==TokenSource.FILED) {
+			key = getKey1(args,token.filedIndex());
 		} else {
-			key = getKey3(args);
+			key = getKey2(args);
 		}
 		
 		if(key ==null){
@@ -107,52 +101,54 @@ public class ControllerInterceptor {
 
 	}
 
-	private String getKey1(Object[] args, String field) {
-		for (Object arg : args) {
-			if (arg instanceof HttpServletRequest) {
-				HttpServletRequest request = (HttpServletRequest) arg;
-				// 获取query string 或 posted form data参数
-				Map<String, String[]> paramMap = request.getParameterMap();
-				for (Entry<String, String[]> entry : paramMap.entrySet()) {
-					if (entry.getKey().equals(field)) {
-						String key = entry.getValue()[0];
-						return key;
-					}
 
-				}
-			}
-		}
-		return null;
-	}
+	//由于在执行时，通过getParamter获取，无法得到参数名称，只能得到arg0,arg1等
+	/*private String getKey1(Parameter[] pms,Object[] args,String [] filedNames) {
 
-	private String getKey2(Object[] args, String[] filedNames) {
+		List<String> fileds= Arrays.asList(filedNames);
+		StringBuffer buffer=new StringBuffer();
 
-		List<String> fileds = Arrays.asList(filedNames);
-		StringBuffer buffer = new StringBuffer();
-		for (Object arg : args) {
-			if (arg instanceof HttpServletRequest) {
-				HttpServletRequest request = (HttpServletRequest) arg;
-				// 获取query string 或 posted form data参数
-				Map<String, String[]> paramMap = request.getParameterMap();
-				for (Entry<String, String[]> entry : paramMap.entrySet()) {
-					if (fileds.contains(entry.getKey())) {
-						buffer.append("-"+entry.getValue()[0]);
-					}
-				}
-
-				return buffer.toString();
+		for(int i=0;i<pms.length;i++){
+			Parameter pm=pms[i];
+			System.out.println(pm.getName()+"=="+args[i].toString());
+			if(fileds.contains(pm.getName())){
+				buffer.append("-"+args[i].toString());
 			}
 
 		}
 
-		return null;
+		return buffer.toString();
+	}*/
+
+
+	private String getKey1(Object[] args,int [] filedIndexs) {
+
+		if(filedIndexs.length==0){
+			throw new RuntimeException("token.filedIndex() can not be empty");
+		}
+		StringBuffer buffer=new StringBuffer();
+
+		for(int i=0;i<filedIndexs.length;i++){
+
+			if(filedIndexs[i]>args.length-1){
+				throw new RuntimeException("token.filedIndex() contain error index");
+			}
+			buffer.append("-"+args[filedIndexs[i]].toString());
+		}
+
+
+		return buffer.toString();
 	}
 
-	private String getKey3(Object[] args) {
 
+
+	private String getKey2(Object[] args) {
+
+		boolean hasReqeustParam=false;
 		StringBuffer buffer = new StringBuffer();
 		for (Object arg : args) {
 			if (arg instanceof HttpServletRequest) {
+				hasReqeustParam=true;
 				HttpServletRequest request = (HttpServletRequest) arg;
 				Map<String, String[]> paramMap = request.getParameterMap();
 				for (Entry<String, String[]> entry : paramMap.entrySet()) {
@@ -161,6 +157,10 @@ public class ControllerInterceptor {
 				return buffer.toString();
 			}
 
+		}
+
+		if(!hasReqeustParam){
+			throw new RuntimeException("params must has HttpServletRequest");
 		}
 
 		return null;
